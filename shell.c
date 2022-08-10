@@ -1,25 +1,22 @@
 #include "main.h"
 
-
 /**
  * execute - executes the command
  * @cmd: command to run
- * Return: 0 on success1 -1 if cmd is exit and 1 on any other error
+ * Return: 0 on success 1 -1 if cmd is kill and 1 on any other error
  */
-
-
 int execute(char **cmd)
 {
 
-.   pid_t child_pid;
+	pid_t child_pid;
 	int status;
 
-.   if (strncmp("exit", cmd[0], 4) == 0)
+	if (strncmp("exit", cmd[0], 4) == 0)
 		return (-1);
 
-. . child_pid = fork();
+	child_pid = fork();
 
-. . if (child_pid == -1)
+	if (child_pid == -1)
 	{
 		perror("Error");
 		return (1);
@@ -35,7 +32,7 @@ int execute(char **cmd)
 	else
 		wait(&status);
 
-. . . . return (0);
+	return (0);
 }
 
 
@@ -46,20 +43,17 @@ int execute(char **cmd)
  * Return: Always 0, -1 on error.
  */
 
-
 int main(int argc, char **argv)
 {
 
-. . . . int response;
-. 	char **tokens;
+	int response;
+	char **tokens;
 	size_t bufsize = BUFSIZ;
 	int isPipe = 0;
 	char *buffer;
 
-
-. . . . if (argc >= 2)
+	if (argc >= 2)
 	{
-		/*TODO: Handle cases where there is no argument, only the command*/
 		if (execve(argv[1], argv, NULL) == -1)
 		{
 			perror("Error");
@@ -68,28 +62,25 @@ int main(int argc, char **argv)
 		return (0);
 	}
 
-
-. . . . buffer = (char *)malloc(bufsize * sizeof(char));
+	buffer = (char *)malloc(bufsize * sizeof(char));
 	if (buffer == NULL)
 	{
 		perror("Unable to allocate buffer");
 		exit(1);
 	}
 
-do {
+	do {
 		if (isatty(fileno(stdin)))
 		{
 			isPipe = 1;
 			_puts("cisfun#: ");
 		}
 
-
-getline(&buffer, &bufsize, stdin);
+		getline(&buffer, &bufsize, stdin);
 		buffer[_strlen(buffer) - 1] = '\0';
 		tokens = stringToTokens(buffer);
 		response = execute(tokens);
 	} while (isPipe && response != -1);
 
-return (0);
+	return (0);
 }
-
